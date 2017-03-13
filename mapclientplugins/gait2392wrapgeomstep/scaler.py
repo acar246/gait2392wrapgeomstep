@@ -12,6 +12,10 @@ import virtualmarker
 from gias2.musculoskeletal import osim
 from gias2.common import math
 
+
+import pdb
+
+
 def _dist(x1, x2):
     return np.sqrt(((x1-x2)**2.0).sum(-1))
 
@@ -83,8 +87,8 @@ def calc_pelvis_scale_factors(ll, unitscale, offset=True):
     sf_z = unitscale*_dist(cust_LASIS, cust_RASIS)/_dist(ref_LASIS, ref_RASIS)
     # sf_y = 0.5*(sf_x + sf_z)
     
-    # print('pelvis scaling factor: {:5.2f} {:5.2f} {:5.2f}'.format(sf_x, sf_y, sf_z))
-
+    print('pelvis scaling factor: {:5.2f} {:5.2f} {:5.2f}'.format(sf_x, sf_y, sf_z))
+	
     return np.array([sf_x, sf_y, sf_z])
 
 
@@ -122,9 +126,11 @@ def _calc_femur_scale_factors(ll, unitscale, side='l', offset=True):
     sf_z = unitscale*_dist(cust_LEC, cust_MEC)/_dist(ref_LEC, ref_MEC)
     sf_x = 0.5*(sf_y + sf_z)
 
-    # print('femur scaling factor: {:5.2f} {:5.2f} {:5.2f}'.format(sf_x, sf_y, sf_z))
-
+    #print('femur scaling factor: {:5.2f} {:5.2f} {:5.2f}'.format(sf_x, sf_y, sf_z))
+    
     return np.array([sf_x, sf_y, sf_z])
+    
+    
 
 #=======#
 # Tibia #
@@ -282,6 +288,7 @@ def scale_wrap_object(wrapObject, sfs):
 	old_radii = wrapObject.getDimensions()
 	wrapObject.scale(sfs)
 	new_radii = wrapObject.getDimensions()
+
 	print('wrapping object dimensions {}: {} -> {}'.format(wrapObject.name, old_radii, new_radii))
 	
 	return wrapObject

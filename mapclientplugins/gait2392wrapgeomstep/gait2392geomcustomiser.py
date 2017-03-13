@@ -40,6 +40,8 @@ from transforms3d.euler import mat2euler
 import opensim
 import scaler
 
+import pdb
+
 #=============================================================================#
 SELF_DIR = os.path.split(os.path.realpath(__file__))[0]
 TEMPLATE_OSIM_PATH = os.path.join(SELF_DIR, 'data', 'gait2392_simbody.osim')
@@ -441,7 +443,7 @@ class Gait2392GeomCustomiser(object):
 
         # right
         if not self._hasInputLL:
-            ll_r = bonemodels.LowerLimbLeftAtlas('right lower limb')
+            ll_r = bonemodels.LowerLimbRightAtlas('right lower limb')
             ll_r.set_bone_gfield('pelvis', gfieldsdict['pelvis'])
             ll_r.set_bone_gfield('femur', gfieldsdict['femur-r'])
             ll_r.set_bone_gfield('patella', gfieldsdict['patella-r'])
@@ -467,11 +469,29 @@ class Gait2392GeomCustomiser(object):
             self.LL.ll_r = ll_r
 
         self.LL._update_model_dict()
-
+        
     def _save_vtp(self, gf, filename, bodycoordmapper):
         v, f = gf.triangulate(self.gfield_disc)
+        '''if (gf.name == 'femur_right_mirrored_from_left_mean_rigid_LLP26'):
+            gf_ = copy.deepcopy(gf)
+            rfemur = bonemodels.FemurModel('femur-r', gf_)
+            rfemur.side = 'right'
+            update_femur_opensim_acs(rfemur)
+            gfpoints = rfemur.acs.map_local(rfemur.gf.get_all_point_positions())
+            rfemur.gf.set_field_parameters(gfpoints.T[:,:,np.newaxis])
+            rfemur.gf.save_geometric_field('femur-r_pre.geof', 'femur-r_pre.ens', 'femur-r_pre.mesh', '/people/acar246/Desktop/')
+			#~ pdb.set_trace()
+			'''
         # f = f[:,::-1]
-        v_local = bodycoordmapper(v)
+        if (gf.name == 'femur_right_mirrored_from_left_mean_rigid_LLP26'):
+            gf_ = copy.deepcopy(gf)
+            rfemur = bonemodels.FemurModel('femur-r', gf_)
+            rfemur.side = 'right'
+            update_femur_opensim_acs(rfemur)
+            v_local = rfemur.acs.map_local(v)
+        else:
+            v_local = bodycoordmapper(v)
+        
         v_local *= self._unit_scaling
         vtkwriter = vtktools.Writer(
                         v=v_local,
@@ -479,7 +499,8 @@ class Gait2392GeomCustomiser(object):
                         filename=filename,
                         )
         vtkwriter.writeVTP()
-
+        
+		
     def _get_osimbody_scale_factors(self, bodyname):
         """
         Returns the scale factor for a body. Caches scale factors
@@ -517,6 +538,8 @@ class Gait2392GeomCustomiser(object):
         sf = self._get_osimbody_scale_factors('pelvis')
         scaler.scale_body_mass_inertia(osim_pelvis, sf)
 
+		#scale the wrap objects however they will need repositioning
+		#which is implemented in the update femur function
         for i in self.osimmodel.wrapObjects:
             scaler.scale_wrap_object(self.osimmodel.wrapObjects[i],sf)
 
@@ -629,6 +652,7 @@ class Gait2392GeomCustomiser(object):
         #         )
         sf = self._get_osimbody_scale_factors('femur_'+side)
         scaler.scale_body_mass_inertia(osim_femur, sf)
+        
         if self.verbose:
             print('scale factor: {}'.format(sf))
 
@@ -662,7 +686,7 @@ class Gait2392GeomCustomiser(object):
                     self.osimmodel.joints['hip_{}'.format(side)].location
                     )
                 )
-
+        
         # update coordinate defaults
         if self._hasInputLL:
             if side=='l':
@@ -689,6 +713,39 @@ class Gait2392GeomCustomiser(object):
                     hip_joint.coordSets['hip_rotation_{}'.format(side)].defaultValue,
                     )
                 )
+		
+		#with the HJC updated we can relocate the wrap objects
+        
+        oldModel = copy.copy(osim.Model(TEMPLATE_OSIM_PATH))
+        oldHJC = oldModel.joints['hip_{}'.format(side)].locationInParent
+        
+        for i in self.osimmodel.wrapObjects:
+
+		    #if the wrap object is on the same side as the femur 
+            if(i[-1] == side):
+		        
+                #we need the joint location of the child joint in term of the main body coords
+                wrap = oldModel.wrapObjects[i]
+                point = np.array(wrap.translation)
+
+                #find a vector from the hip joint centre to the centre of the wrap object
+                vec = point - oldHJC
+
+                scale = self._get_osimbody_scale_factors('pelvis')
+                
+		        #scale the vector
+                scaleVec = scale*vec
+
+		        #add this vector to the updated HJC
+                updatedJC = self.osimmodel.joints['hip_{}'.format(side)]
+                updatedJClocation = updatedJC.locationInParent
+
+                #newWrapCentre = updatedJClocation + scaleVec
+                newWrapCentre = updatedJClocation + vec
+
+		        #set this as the centre of the updated wrap object
+                wrap2 = self.osimmodel.wrapObjects[i]
+                wrap2.translation = newWrapCentre
 
         # update mesh l_femur.vtp
         if self.verbose:
