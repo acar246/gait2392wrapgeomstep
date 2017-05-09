@@ -363,7 +363,7 @@
 									<!--Display Pref. 0:Hide 1:Wire 3:Flat 4:Shaded Can be overriden for individual geometries-->
 									<display_preference>0</display_preference>
 								</VisibleObject>
-								<dimensions> 0.0468576 0.0388117 0.0843425</dimensions>
+								<dimensions> 0.052 0.0392 0.071</dimensions>
 							</WrapEllipsoid>
 							<WrapEllipsoid name="IL_at_brim_r">
 								<!--Display Pref. 0:Hide 1:Wire 3:Flat 4:Shaded-->
@@ -387,7 +387,7 @@
 									<!--Display Pref. 0:Hide 1:Wire 3:Flat 4:Shaded Can be overriden for individual geometries-->
 									<display_preference>0</display_preference>
 								</VisibleObject>
-								<dimensions> 0.0494708 0.0658412 0.0843425</dimensions>
+								<dimensions> 0.0549 0.0665 0.071</dimensions>
 							</WrapEllipsoid>
 							<WrapEllipsoid name="Gmax_at_pelvis_r">
 								<!--Display Pref. 0:Hide 1:Wire 3:Flat 4:Shaded-->
@@ -411,7 +411,7 @@
 									<!--Display Pref. 0:Hide 1:Wire 3:Flat 4:Shaded Can be overriden for individual geometries-->
 									<display_preference>0</display_preference>
 								</VisibleObject>
-								<dimensions> 0.0379962 0.0420474 0.0656206</dimensions>
+								<dimensions> 0.04 0.04 0.06</dimensions>
 							</WrapEllipsoid>
 							<WrapEllipsoid name="PS_at_brim_l">
 								<!--Display Pref. 0:Hide 1:Wire 3:Flat 4:Shaded-->
@@ -435,7 +435,7 @@
 									<!--Display Pref. 0:Hide 1:Wire 3:Flat 4:Shaded Can be overriden for individual geometries-->
 									<display_preference>0</display_preference>
 								</VisibleObject>
-								<dimensions> 0.0468576 0.0388117 0.0843425</dimensions>
+								<dimensions> 0.052 0.0392 0.071</dimensions>
 							</WrapEllipsoid>
 							<WrapEllipsoid name="IL_at_brim_l">
 								<!--Display Pref. 0:Hide 1:Wire 3:Flat 4:Shaded-->
@@ -459,7 +459,7 @@
 									<!--Display Pref. 0:Hide 1:Wire 3:Flat 4:Shaded Can be overriden for individual geometries-->
 									<display_preference>0</display_preference>
 								</VisibleObject>
-								<dimensions> 0.0494708 0.0658412 0.0843425</dimensions>
+								<dimensions> 0.0549 0.0665 0.071</dimensions>
 							</WrapEllipsoid>
 							<WrapEllipsoid name="Gmax_at_pelvis_l">
 								<!--Display Pref. 0:Hide 1:Wire 3:Flat 4:Shaded-->
@@ -483,7 +483,7 @@
 									<!--Display Pref. 0:Hide 1:Wire 3:Flat 4:Shaded Can be overriden for individual geometries-->
 									<display_preference>0</display_preference>
 								</VisibleObject>
-								<dimensions> 0.0379962 0.0420474 0.0656206</dimensions>
+								<dimensions> 0.04 0.04 0.06</dimensions>
 							</WrapEllipsoid>
 						</objects>
 						<groups />

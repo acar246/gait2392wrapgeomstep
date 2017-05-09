@@ -538,10 +538,6 @@ class Gait2392GeomCustomiser(object):
         sf = self._get_osimbody_scale_factors('pelvis')
         scaler.scale_body_mass_inertia(osim_pelvis, sf)
 
-		#scale the wrap objects however they will need repositioning
-		#which is implemented in the update femur function
-        for i in self.osimmodel.wrapObjects:
-            scaler.scale_wrap_object(self.osimmodel.wrapObjects[i],sf)
 
         if self.verbose:
             print('scale factor: {}'.format(sf))
@@ -713,7 +709,7 @@ class Gait2392GeomCustomiser(object):
                     hip_joint.coordSets['hip_rotation_{}'.format(side)].defaultValue,
                     )
                 )
-		
+        
 		#with the HJC updated we can relocate the wrap objects
         
         oldModel = copy.copy(osim.Model(TEMPLATE_OSIM_PATH))
